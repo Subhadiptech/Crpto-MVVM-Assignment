@@ -33,6 +33,12 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    fun onRefresh() {
+        _isLoading.value = true
+        fetchLiveList()
+        _isLoading.value = false
+    }
+
     fun fetchData() = viewModelScope.launch {
         respository.fetchCryptoList().collectLatest { data ->
             _feedData.value = data

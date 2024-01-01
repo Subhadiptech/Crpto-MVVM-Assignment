@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
                     currentData.data,
                     liveList,
                     isLoading = isLoading,
-                    onRefresh = viewModel::fetchLiveList
+                    onRefresh = viewModel::onRefresh
                 )
 
                 null -> LoadingScreen()
