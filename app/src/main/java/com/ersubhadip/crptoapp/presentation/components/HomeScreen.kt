@@ -26,12 +26,15 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.ersubhadip.crptoapp.R
+import com.ersubhadip.crptoapp.domain.StandardResponse
+import com.ersubhadip.crptoapp.domain.model.CryptoListModel
+import com.ersubhadip.crptoapp.domain.model.CryptoLiveModel
+import com.ersubhadip.crptoapp.domain.model.toCommonCryptoDetails
 import com.ersubhadip.crptoapp.ui.theme.Chakra
 import com.ersubhadip.crptoapp.ui.theme.Green
 import com.ersubhadip.crptoapp.ui.theme.LexendDeca
@@ -39,42 +42,74 @@ import com.ersubhadip.crptoapp.ui.theme.PrimaryBackground
 import com.ersubhadip.crptoapp.ui.theme.PrimaryBlue
 import com.ersubhadip.crptoapp.ui.theme.SlateDark
 import com.ersubhadip.crptoapp.ui.theme.White
+import com.google.accompanist.swiperefresh.SwipeRefresh
+import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
-@Preview
-fun HomeScreen() {
+fun HomeScreen(
+    cryptoListModel: CryptoListModel,
+    cryptoLiveModel: StandardResponse<CryptoLiveModel>?,
+    isLoading: Boolean,
+    onRefresh: () -> Unit
+) {
 
-    val list = (1..10).map { "$it" }
+    val commonList = when (val data = cryptoLiveModel) {
+        is StandardResponse.Failed -> cryptoListModel.toCommonCryptoDetails(CryptoLiveModel())
+        StandardResponse.Loading -> cryptoListModel.toCommonCryptoDetails(CryptoLiveModel())
+        is StandardResponse.Success -> cryptoListModel.toCommonCryptoDetails(data.data)
+        null -> cryptoListModel.toCommonCryptoDetails(CryptoLiveModel())
+    }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(PrimaryBackground)
+    val refreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
+
+    SwipeRefresh(
+        state = refreshState,
+        onRefresh = onRefresh,
     ) {
-        LazyColumn {
-            item {
-                Spacer(modifier = Modifier.height(24.dp))
-                Text(
-                    text = "Crypto App",
-                    fontFamily = Chakra,
-                    fontSize = 32.sp,
-                    textAlign = TextAlign.Center,
-                    color = PrimaryBlue,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-            }
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(PrimaryBackground)
+        ) {
+            LazyColumn {
+                item {
+                    Spacer(modifier = Modifier.height(24.dp))
+                    Text(
+                        text = "Crypto App",
+                        fontFamily = Chakra,
+                        fontSize = 32.sp,
+                        textAlign = TextAlign.Center,
+                        color = PrimaryBlue,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
 
-            items(list) {
-                CryptoItemView()
+                items(commonList) {
+                    CryptoItemView(
+                        imageUrl = it.iconURL,
+                        name = it.nameFull,
+                        maxSupply = it.maxSupply,
+                        priceUSD = "${
+                            if (it.priceInUSD.length > 6) it.priceInUSD.subSequence(
+                                0,
+                                6
+                            ) else it.priceInUSD
+                        } USD"
+                    )
+                }
             }
         }
     }
 }
 
 @Composable
-@Preview
-fun CryptoItemView() {
+fun CryptoItemView(
+    imageUrl: String,
+    name: String,
+    maxSupply: String,
+    priceUSD: String
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -94,7 +129,7 @@ fun CryptoItemView() {
         ) {
             AsyncImage(
                 model = ImageRequest.Builder(LocalContext.current)
-                    .data("https://assets.coinlayer.com/icons/ABC.png")
+                    .data(imageUrl)
                     .crossfade(true)
                     .build(),
                 contentScale = ContentScale.Crop,
@@ -109,30 +144,26 @@ fun CryptoItemView() {
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = "Full Name",
+                text = name,
                 fontSize = 18.sp,
                 fontFamily = LexendDeca,
                 color = White
             )
             Text(
-                text = "Symbol",
+                text = "Max Supply: $maxSupply",
                 fontSize = 14.sp,
                 fontFamily = LexendDeca,
                 color = White.copy(alpha = 0.5f)
             )
-            Text(
-                text = "Supply",
-                fontSize = 10.sp,
-                fontFamily = LexendDeca,
-                color = White.copy(alpha = 0.3f)
-            )
         }
         Spacer(modifier = Modifier.width(8.dp))
         Text(
-            text = "5.5 USD",
+            text = priceUSD,
             fontSize = 18.sp,
             fontFamily = LexendDeca,
             color = Green
         )
     }
 }
+
+

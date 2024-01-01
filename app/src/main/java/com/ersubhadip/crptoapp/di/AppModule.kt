@@ -1,8 +1,8 @@
 package com.ersubhadip.crptoapp.di
 
 import com.ersubhadip.crptoapp.data.ICryptoAPI
-import com.ersubhadip.crptoapp.data.IRemoteDataRepository
-import com.ersubhadip.crptoapp.domain.RemoteDataRepositoryImpl
+import com.ersubhadip.crptoapp.domain.IRemoteDataRepository
+import com.ersubhadip.crptoapp.data.RemoteDataRepositoryImpl
 import com.ersubhadip.crptoapp.utils.Constant
 import dagger.Module
 import dagger.Provides

@@ -20,9 +20,9 @@ data class CryptoResponse(
 
 @Keep
 data class CryptoModel(
-    val iconURL: String,
+    val icon_url: String,
     val symbol: String,
-    val nameFull: String,
+    val name_full: String,
     val name: String,
-    val maxSupply: Long
+    val max_supply: String
 )

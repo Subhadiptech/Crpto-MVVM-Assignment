@@ -1,4 +1,4 @@
-package com.ersubhadip.crptoapp.data
+package com.ersubhadip.crptoapp.domain
 
 sealed class StandardResponse<out T> {
     class Success<T>(val data: T) : StandardResponse<T>()

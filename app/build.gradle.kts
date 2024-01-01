@@ -101,6 +101,9 @@ dependencies {
     //compose icons extended
     implementation("androidx.compose.material:material-icons-extended-android:1.5.4")
 
+    //pull to refresh
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.27.0")
+
 }
 
 kapt {
