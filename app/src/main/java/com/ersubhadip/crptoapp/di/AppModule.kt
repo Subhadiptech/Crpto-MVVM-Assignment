@@ -40,5 +40,6 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRemoteRepository(): IRemoteDataRepository = RemoteDataRepositoryImpl()
+    fun provideRemoteRepository(api: ICryptoAPI): IRemoteDataRepository =
+        RemoteDataRepositoryImpl(api)
 }
