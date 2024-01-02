@@ -5,6 +5,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 
 abstract class BaseRepository {
+
+    //Wrapper to safe call retry() in IO with 3 times by default
     suspend fun <T> retryIO(
         times: Int = 3,
         initialDelayMillis: Long = 100,
@@ -17,6 +19,7 @@ abstract class BaseRepository {
         }
     }
 
+    //Wrapper to call action with retry
     private suspend fun <T> retry(
         times: Int,
         initialDelayMillis: Long,
@@ -37,6 +40,7 @@ abstract class BaseRepository {
         return block()
     }
 
+    //Wrapper for try-catch
     suspend fun <T> safeWrap(
         block: suspend () -> T,
         errorHandler: suspend (Exception) -> T

@@ -1,5 +1,6 @@
 package com.ersubhadip.crptoapp.domain.model
 
+//Model for List of crypto data
 data class CryptoListModel(
     val crypto: Map<String, CryptoDataModel>
 )

@@ -18,6 +18,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,6 +46,8 @@ import com.ersubhadip.crptoapp.ui.theme.PrimaryBackground
 import com.ersubhadip.crptoapp.ui.theme.PrimaryBlue
 import com.ersubhadip.crptoapp.ui.theme.SlateDark
 import com.ersubhadip.crptoapp.ui.theme.White
+import com.ersubhadip.crptoapp.utils.formatMillisToTime
+import com.ersubhadip.crptoapp.utils.roundToXDecimalPlaces
 
 @Composable
 fun HomeScreen(
@@ -49,45 +55,55 @@ fun HomeScreen(
     cryptoLiveModel: StandardResponse<CryptoLiveModel>?
 ) {
 
+    var lastUpdatedText by rememberSaveable {
+        mutableStateOf(formatMillisToTime(System.currentTimeMillis()))
+    }
+
     val commonList = when (val data = cryptoLiveModel) {
         is StandardResponse.Failed -> cryptoListModel.toCommonCryptoDetails(CryptoLiveModel())
         StandardResponse.Loading -> cryptoListModel.toCommonCryptoDetails(CryptoLiveModel())
-        is StandardResponse.Success -> cryptoListModel.toCommonCryptoDetails(data.data)
+        is StandardResponse.Success -> {
+            lastUpdatedText = formatMillisToTime(System.currentTimeMillis())
+            cryptoListModel.toCommonCryptoDetails(data.data)
+        }
+
         null -> cryptoListModel.toCommonCryptoDetails(CryptoLiveModel())
     }
 
-    Box(
+    LazyColumn(
         modifier = Modifier
             .fillMaxSize()
             .background(PrimaryBackground)
     ) {
-        LazyColumn {
-            item {
-                Spacer(modifier = Modifier.height(24.dp))
-                Text(
-                    text = "Crypto App",
-                    fontFamily = Chakra,
-                    fontSize = 32.sp,
-                    textAlign = TextAlign.Center,
-                    color = PrimaryBlue,
-                    modifier = Modifier.fillMaxWidth()
-                )
-                Spacer(modifier = Modifier.height(12.dp))
-            }
+        item {
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                text = "Crypto App",
+                fontFamily = Chakra,
+                fontSize = 32.sp,
+                textAlign = TextAlign.Center,
+                color = PrimaryBlue,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Spacer(modifier = Modifier.height(6.dp))
+            Text(
+                text = "Last Updated at: $lastUpdatedText",
+                fontSize = 10.sp,
+                fontFamily = LexendDeca,
+                color = White.copy(alpha = 0.5f),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                textAlign = TextAlign.End
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+        }
 
-            items(commonList) {
-                CryptoItemView(
-                    imageUrl = it.iconURL,
-                    name = it.nameFull,
-                    maxSupply = it.maxSupply,
-                    priceUSD = "${
-                        if (it.priceInUSD.length > 6) it.priceInUSD.subSequence(
-                            0,
-                            6
-                        ) else it.priceInUSD
-                    } USD"
-                )
-            }
+        items(commonList) {
+            CryptoItemView(
+                imageUrl = it.iconURL,
+                name = it.nameFull,
+                maxSupply = it.maxSupply,
+                priceUSD = "${it.priceInUSD} USD"
+            )
         }
     }
 }
@@ -135,13 +151,13 @@ fun CryptoItemView(
         ) {
             Text(
                 text = name,
-                fontSize = 18.sp,
+                fontSize = 16.sp,
                 fontFamily = LexendDeca,
                 color = White
             )
             Text(
                 text = "Max Supply: $maxSupply",
-                fontSize = 14.sp,
+                fontSize = 12.sp,
                 fontFamily = LexendDeca,
                 color = White.copy(alpha = 0.5f)
             )

@@ -1,6 +1,8 @@
 package com.ersubhadip.crptoapp.domain.model
 
-data class CommonCryptoDetail(
+import com.ersubhadip.crptoapp.utils.roundToXDecimalPlaces
+
+data class CommonCryptoDetail( //UI related Model
     val priceInUSD: String,
     val iconURL: String,
     val symbol: String,
@@ -11,7 +13,9 @@ data class CommonCryptoDetail(
 
 fun CryptoListModel.toCommonCryptoDetails(cryptoLiveModel: CryptoLiveModel): List<CommonCryptoDetail> {
     return crypto.mapValues { (_, cryptoDataModel) ->
-        val priceInUSD = cryptoLiveModel.rates?.get(cryptoDataModel.symbol)?.toString() ?: "N/A"
+        val priceInUSD =
+            cryptoLiveModel.rates?.get(cryptoDataModel.symbol)?.roundToXDecimalPlaces(6.0)
+                ?.toString() ?: "N/A"
         CommonCryptoDetail(
             priceInUSD = priceInUSD,
             iconURL = cryptoDataModel.iconURL,
