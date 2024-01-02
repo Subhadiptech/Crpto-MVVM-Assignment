@@ -20,6 +20,8 @@ https://github.com/Subhadiptech/Crpto-MVVM-Assignment/assets/89024718/6c2f39f3-5
 Safeguarding sensitive API keys through Gradle properties for enhanced security and streamlined management.
 - **Clean MVVM Architecture with Jetpack Compose:**
 Employing a structured and scalable architecture, Clean MVVM, coupled with the modern UI framework Jetpack Compose for efficient user interface design.
+- **Made the class dependencies lose using DI with Hilt: **
+Used Hilt to provide the dependencies and did field injection majorly
 - **Error Handling with Retry Mechanism:**
 Implementing a robust error-handling strategy, including a systematic retry mechanism for seamless recovery after a failure.
 - **Loading and Failure State Management:**
