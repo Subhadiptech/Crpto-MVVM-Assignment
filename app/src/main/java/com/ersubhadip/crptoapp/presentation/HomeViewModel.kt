@@ -35,8 +35,24 @@ class HomeViewModel @Inject constructor(
 
     fun onRefresh() {
         _isLoading.value = true
-        fetchLiveList()
+        if (feedData.value is StandardResponse.Failed) {
+            //Call Complete API
+            onRefreshForFailure()
+            onRefreshLiveCrypto()
+        } else {
+            //Call only Live data API
+            onRefreshLiveCrypto()
+        }
         _isLoading.value = false
+    }
+
+    private fun onRefreshLiveCrypto() {
+        fetchLiveList()
+    }
+
+    private fun onRefreshForFailure() {
+        fetchData()
+        fetchLiveList()
     }
 
     fun fetchData() = viewModelScope.launch {

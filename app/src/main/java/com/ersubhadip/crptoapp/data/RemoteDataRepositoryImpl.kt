@@ -1,6 +1,5 @@
 package com.ersubhadip.crptoapp.data
 
-import android.util.Log
 import com.ersubhadip.crptoapp.BuildConfig
 import com.ersubhadip.crptoapp.domain.IRemoteDataRepository
 import com.ersubhadip.crptoapp.domain.StandardResponse
@@ -14,41 +13,50 @@ import javax.inject.Inject
 
 class RemoteDataRepositoryImpl @Inject constructor(
     private val api: ICryptoAPI
-) : IRemoteDataRepository {
+) : IRemoteDataRepository, BaseRepository() {
     override suspend fun fetchLiveCrypto(): Flow<StandardResponse<CryptoLiveModel>> =
         flow {
-            val resp = api.fetchLiveCrypto(BuildConfig.API_KEY)
-            if (resp.isSuccessful && resp.body() != null) {
-                emit(
-                    StandardResponse.Success(
-                        resp.body()?.toCryptoLiveModel()!!
+            emit(StandardResponse.Loading)
+            safeWrap(
+                block = {
+                    emit(
+                        retryIO {
+                            val resp = api.fetchLiveCrypto(BuildConfig.API_KEY)
+                            if (resp.isSuccessful && resp.body() != null) {
+                                StandardResponse.Success(resp.body()?.toCryptoLiveModel()!!)
+                            } else {
+                                StandardResponse.Failed("Something went wrong!")
+                            }
+                        }
                     )
-                )
-            } else {
-                emit(
-                    StandardResponse.Failed(
-                        "Something went wrong!"
-                    )
-                )
-            }
+                },
+                errorHandler = {
+                    emit(StandardResponse.Failed("Something went wrong!"))
+                }
+            )
+
         }.flowOn(Dispatchers.IO)
 
     override suspend fun fetchCryptoList(): Flow<StandardResponse<CryptoListModel>> =
         flow {
-            val resp = api.fetchCryptoList(BuildConfig.API_KEY)
-            if (resp.isSuccessful && resp.body() != null) {
-                Log.d("ActivityLog: Repo", resp.body()?.crypto.toString())
-                emit(
-                    StandardResponse.Success(
-                        resp.body()?.toCryptoListModel()!!
+            emit(StandardResponse.Loading)
+            safeWrap(
+                block = {
+                    emit(
+                        retryIO {
+                            val resp = api.fetchCryptoList(BuildConfig.API_KEY)
+                            if (resp.isSuccessful && resp.body() != null) {
+                                StandardResponse.Success(resp.body()?.toCryptoListModel()!!)
+                            } else {
+                                StandardResponse.Failed("Something went wrong!")
+                            }
+                        }
                     )
-                )
-            } else {
-                emit(
-                    StandardResponse.Failed(
-                        "Something went wrong!"
-                    )
-                )
-            }
+                },
+                errorHandler = {
+                    emit(StandardResponse.Failed("Something went wrong!"))
+                }
+            )
+
         }.flowOn(Dispatchers.IO)
 }

@@ -42,15 +42,11 @@ import com.ersubhadip.crptoapp.ui.theme.PrimaryBackground
 import com.ersubhadip.crptoapp.ui.theme.PrimaryBlue
 import com.ersubhadip.crptoapp.ui.theme.SlateDark
 import com.ersubhadip.crptoapp.ui.theme.White
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 
 @Composable
 fun HomeScreen(
     cryptoListModel: CryptoListModel,
-    cryptoLiveModel: StandardResponse<CryptoLiveModel>?,
-    isLoading: Boolean,
-    onRefresh: () -> Unit
+    cryptoLiveModel: StandardResponse<CryptoLiveModel>?
 ) {
 
     val commonList = when (val data = cryptoLiveModel) {
@@ -60,48 +56,42 @@ fun HomeScreen(
         null -> cryptoListModel.toCommonCryptoDetails(CryptoLiveModel())
     }
 
-    val refreshState = rememberSwipeRefreshState(isRefreshing = isLoading)
-
-    SwipeRefresh(
-        state = refreshState,
-        onRefresh = onRefresh,
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(PrimaryBackground)
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(PrimaryBackground)
-        ) {
-            LazyColumn {
-                item {
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Text(
-                        text = "Crypto App",
-                        fontFamily = Chakra,
-                        fontSize = 32.sp,
-                        textAlign = TextAlign.Center,
-                        color = PrimaryBlue,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                }
+        LazyColumn {
+            item {
+                Spacer(modifier = Modifier.height(24.dp))
+                Text(
+                    text = "Crypto App",
+                    fontFamily = Chakra,
+                    fontSize = 32.sp,
+                    textAlign = TextAlign.Center,
+                    color = PrimaryBlue,
+                    modifier = Modifier.fillMaxWidth()
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+            }
 
-                items(commonList) {
-                    CryptoItemView(
-                        imageUrl = it.iconURL,
-                        name = it.nameFull,
-                        maxSupply = it.maxSupply,
-                        priceUSD = "${
-                            if (it.priceInUSD.length > 6) it.priceInUSD.subSequence(
-                                0,
-                                6
-                            ) else it.priceInUSD
-                        } USD"
-                    )
-                }
+            items(commonList) {
+                CryptoItemView(
+                    imageUrl = it.iconURL,
+                    name = it.nameFull,
+                    maxSupply = it.maxSupply,
+                    priceUSD = "${
+                        if (it.priceInUSD.length > 6) it.priceInUSD.subSequence(
+                            0,
+                            6
+                        ) else it.priceInUSD
+                    } USD"
+                )
             }
         }
     }
 }
+
 
 @Composable
 fun CryptoItemView(
@@ -159,7 +149,7 @@ fun CryptoItemView(
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = priceUSD,
-            fontSize = 18.sp,
+            fontSize = 14.sp,
             fontFamily = LexendDeca,
             color = Green
         )
