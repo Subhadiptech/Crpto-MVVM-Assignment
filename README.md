@@ -12,6 +12,8 @@ https://github.com/Subhadiptech/Crpto-MVVM-Assignment/assets/89024718/6c2f39f3-5
 
 #### incase video is not visible: [Click Here](https://drive.google.com/file/d/1BsMOTlnu3r1dGKNwIba00inQAJGs7Y8m/view?usp=sharing)
 
+#### Download APK: [Click Here](https://i.diawi.com/wJQRpX)
+
 ## Some key features 🛠
 
 - **API Key Protection with Gradle Properties:**
