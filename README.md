@@ -11,6 +11,8 @@
 <img width="20%" height = "50%" src="https://github.com/Subhadiptech/Crpto-MVVM-Assignment/assets/89024718/a810c627-6fa5-4582-b7e8-cbbb5a5719d8" alt="cover" />
 </div>
 
+#### incase video is not visible: [Click Here](https://drive.google.com/file/d/1BsMOTlnu3r1dGKNwIba00inQAJGs7Y8m/view?usp=sharing)
+
 ## Some key features 🛠
 
 - **API Key Protection with Gradle Properties:**
