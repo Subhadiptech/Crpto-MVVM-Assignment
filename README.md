@@ -6,6 +6,11 @@
 
 # Crypto App 📱
 
+## Demo Video 📹
+<div align="center">
+<img width="20%" height = "50%" src="https://github.com/Subhadiptech/Crpto-MVVM-Assignment/assets/89024718/a810c627-6fa5-4582-b7e8-cbbb5a5719d8" alt="cover" />
+</div>
+
 ## Some key features 🛠
 
 - **API Key Protection with Gradle Properties:**
